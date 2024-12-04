@@ -1,6 +1,7 @@
 package com.spring_cloud.eureka.client.auth.service;
 
 import com.spring_cloud.eureka.client.auth.dto.SignupRequestDto;
+import com.spring_cloud.eureka.client.auth.dto.UserDto;
 import com.spring_cloud.eureka.client.auth.dto.UsernameResponseDto;
 import com.spring_cloud.eureka.client.auth.entity.User;
 import com.spring_cloud.eureka.client.auth.entity.UserRoleEnum;
@@ -58,8 +59,10 @@ public class UserService {
         return false;
     }
 
-    public User getUser(String username) {
-        return userRepository.findById(username)
+    public UserDto getUser(String username) {
+        User user = userRepository.findById(username)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        return UserDto.from(user);
     }
 }

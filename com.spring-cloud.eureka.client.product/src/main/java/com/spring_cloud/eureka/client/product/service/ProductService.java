@@ -1,5 +1,6 @@
 package com.spring_cloud.eureka.client.product.service;
 
+import com.spring_cloud.eureka.client.product.dto.ProductDto;
 import com.spring_cloud.eureka.client.product.dto.ProductIdResponseDto;
 import com.spring_cloud.eureka.client.product.dto.ProductInfoRequestDto;
 import com.spring_cloud.eureka.client.product.dto.ProductListResponseDto;
@@ -38,9 +39,12 @@ public class ProductService {
 
     }
 
-    public Product getProduct(Long productId) {
+    public ProductDto getProduct(Long productId) {
 
-            return productRepository.findById(productId)
-                    .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+
+        ProductDto productDto = ProductDto.from(product);
+        return productDto;
     }
 }

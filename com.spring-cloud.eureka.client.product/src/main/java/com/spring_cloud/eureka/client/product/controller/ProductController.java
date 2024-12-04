@@ -1,11 +1,12 @@
 package com.spring_cloud.eureka.client.product.controller;
 
+import com.spring_cloud.eureka.client.product.dto.ProductDto;
 import com.spring_cloud.eureka.client.product.dto.ProductIdResponseDto;
 import com.spring_cloud.eureka.client.product.dto.ProductInfoRequestDto;
 import com.spring_cloud.eureka.client.product.dto.ProductListResponseDto;
-import com.spring_cloud.eureka.client.product.entity.Product;
 import com.spring_cloud.eureka.client.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/products")
 public class ProductController {
+
+    @Value("${server.port}") // 애플리케이션이 실행 중인 포트를 주입받습니다.
+    private String serverPort;
 
     private final ProductService productService;
 
@@ -45,10 +49,10 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public Product getProduct(@PathVariable("productId") Long productId) {
+    public ProductDto getProduct(@PathVariable("productId") Long productId) {
 
-        Product product = productService.getProduct(productId);
+        ProductDto productDto = productService.getProduct(productId);
 
-        return product;
+        return productDto;
     }
 }

@@ -1,4 +1,0 @@
-server:
-  port: 19082
-
-message: "product-service message"

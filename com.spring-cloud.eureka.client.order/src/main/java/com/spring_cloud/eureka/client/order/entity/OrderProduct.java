@@ -1,8 +1,6 @@
 package com.spring_cloud.eureka.client.order.entity;
 
 
-import com.spring_cloud.eureka.client.auth.entity.User;
-import com.spring_cloud.eureka.client.product.entity.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,21 +28,25 @@ public class OrderProduct {
     @Column
     private int quantity;
 
-    @ManyToOne
-    @JoinColumn(name = "username")
-    private User user;
+//    @ManyToOne
+//    @JoinColumn(name = "username")
+//    private User user;
+    @Column(nullable = false)
+    private String username; // User의 식별자
 
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+//    @ManyToOne
+//    @JoinColumn(name = "product_id")
+//    private Product product;
+    @Column(nullable = false)
+    private Long productId; // User의 식별자
 
-    public OrderProduct(User user, Product product, Order order) {
-        this.user = user;
-        this.product = product;
+    public OrderProduct(String username, Long productId, Order order) {
+        this.username = username;
+        this.productId = productId;
         this.order = order;
         this.quantity = 1;
     }
