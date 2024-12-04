@@ -1,5 +1,6 @@
 package com.spring_cloud.eureka.client.order.repository;
 
+import com.spring_cloud.eureka.client.product.entity.Product;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,5 +9,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface ProductClient {
 
     @GetMapping("/product/{id}")
-    String getProduct(@PathVariable("id") String id);
+    Product getProduct(@PathVariable("id") Long id);
 }

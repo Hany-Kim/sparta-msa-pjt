@@ -1,6 +1,15 @@
 spring:
   application:
     name: order-service
+  profiles:
+    active: local
+  config:
+    import: "configserver:"
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: config-server
   datasource:
     url: jdbc:postgresql://localhost:5432/msa
     username: root
@@ -14,8 +23,16 @@ spring:
       format-sql: true
       use_sql_comments: true
 server:
-  port: 19092
+  port: 0
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:19090/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+
+mesage: "default message"

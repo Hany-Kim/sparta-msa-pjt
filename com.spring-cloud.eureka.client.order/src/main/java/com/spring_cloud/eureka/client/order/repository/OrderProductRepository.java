@@ -1,6 +1,6 @@
 package com.spring_cloud.eureka.client.order.repository;
 
-import com.example.demo.model.user.entity.User;
+import com.spring_cloud.eureka.client.auth.entity.User;
 import com.spring_cloud.eureka.client.order.entity.Order;
 import com.spring_cloud.eureka.client.order.entity.OrderProduct;
 import com.spring_cloud.eureka.client.product.entity.Product;

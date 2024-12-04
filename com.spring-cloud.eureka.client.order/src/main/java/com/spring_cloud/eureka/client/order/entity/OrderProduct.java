@@ -1,6 +1,7 @@
 package com.spring_cloud.eureka.client.order.entity;
 
-import com.example.demo.model.user.entity.User;
+
+import com.spring_cloud.eureka.client.auth.entity.User;
 import com.spring_cloud.eureka.client.product.entity.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

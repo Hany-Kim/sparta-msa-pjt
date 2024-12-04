@@ -1,7 +1,6 @@
 package com.spring_cloud.eureka.client.order.service;
 
-import com.example.demo.model.user.entity.User;
-import com.example.demo.model.user.repository.UserRepository;
+import com.spring_cloud.eureka.client.auth.entity.User;
 import com.spring_cloud.eureka.client.order.dto.OrderListResponseDto;
 import com.spring_cloud.eureka.client.order.entity.Order;
 import com.spring_cloud.eureka.client.order.entity.OrderProduct;
@@ -37,8 +36,9 @@ public class OrderService {
     public OrderListResponseDto addOrder(String username) {
 
         // 사용자 영속성 체크
-        User user = userRepository.findById(username)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+//        User user = userRepository.findById(username)
+//                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        User user = userClinet.getUser(username);
 
         // 주문 생성
 
@@ -64,12 +64,14 @@ public class OrderService {
     public OrderListResponseDto addProductToOrder(String username, Long orderId, Long productId) {
 
         // 사용자 영속성 체크
-        User user = userRepository.findById(username)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+//        User user = userRepository.findById(username)
+//                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        User user = userClinet.getUser(username);
 
         // 상품 영속성 체크
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+//        Product product = productRepository.findById(productId)
+//                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
+        Product product = productClient.getProduct(productId);
 
         // 주문 영속성 체크
         Order order = orderRepository.findById(orderId)

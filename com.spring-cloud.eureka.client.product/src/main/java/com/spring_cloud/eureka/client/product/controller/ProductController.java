@@ -3,17 +3,21 @@ package com.spring_cloud.eureka.client.product.controller;
 import com.spring_cloud.eureka.client.product.dto.ProductIdResponseDto;
 import com.spring_cloud.eureka.client.product.dto.ProductInfoRequestDto;
 import com.spring_cloud.eureka.client.product.dto.ProductListResponseDto;
+import com.spring_cloud.eureka.client.product.entity.Product;
 import com.spring_cloud.eureka.client.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RefreshScope
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/products")
@@ -38,5 +42,13 @@ public class ProductController {
         ProductListResponseDto responseDto = productService.getProductList();
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
+    @GetMapping("/{productId}")
+    public Product getProduct(@PathVariable("productId") Long productId) {
+
+        Product product = productService.getProduct(productId);
+
+        return product;
     }
 }
