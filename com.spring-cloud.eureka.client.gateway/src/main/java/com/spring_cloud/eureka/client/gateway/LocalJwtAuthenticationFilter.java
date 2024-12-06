@@ -31,11 +31,10 @@ public class LocalJwtAuthenticationFilter implements GlobalFilter {
 
         String token = extractToken(exchange);
 
-        if(token == null || !validateToken(token)){
+        if(token == null || !validateToken(token, path)){
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
-
         return chain.filter(exchange);
     }
 
@@ -47,7 +46,7 @@ public class LocalJwtAuthenticationFilter implements GlobalFilter {
         return null;
     }
 
-    private boolean validateToken(String token){
+    private boolean validateToken(String token, String path){
         try{
             SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
             Jws<Claims> claimsJws = Jwts.parser()
@@ -57,6 +56,13 @@ public class LocalJwtAuthenticationFilter implements GlobalFilter {
             log.info("#####payload :: " + claimsJws.getPayload().toString());
 
             // 추가적인 검증 로직 (예: 토큰 만료 여부 확인 등)을 여기에 추가할 수 있습니다.
+            if(path.equals("/products")){
+                if(!claimsJws.getBody().get("role").equals("OWNER")
+                        && !claimsJws.getBody().get("role").equals("MANAGER")
+                        && !claimsJws.getBody().get("role").equals("MASTER")){
+                    return false;
+                }
+            }
             return true;
         }catch (Exception e){
             return false;

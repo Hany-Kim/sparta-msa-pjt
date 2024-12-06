@@ -29,12 +29,12 @@ public class ProductController {
 
     private final ProductService productService;
 
-    @Secured({"ROLE_OWNER", "ROLE_MANAGER", "ROLE_MASTER"})
+    //@Secured({"ROLE_OWNER", "ROLE_MANAGER", "ROLE_MASTER"})
     @PostMapping
     public ResponseEntity<ProductIdResponseDto> createProduct(
             @RequestBody ProductInfoRequestDto requestDto
     ) {
-
+        System.out.println("createProduct 호출=====");
         ProductIdResponseDto responseDto = productService.createProduct(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);

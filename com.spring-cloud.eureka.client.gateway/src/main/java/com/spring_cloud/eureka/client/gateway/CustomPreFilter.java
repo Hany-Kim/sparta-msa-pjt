@@ -14,6 +14,9 @@ public class CustomPreFilter implements GlobalFilter, Ordered {
     private static final Logger logger = Logger.getLogger(CustomPreFilter.class.getName());
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+//        String authHeader = exchange.getRequest().getHeaders().getFirst("Authorization");
+//        System.out.println("Authorization Header in Gateway: " + authHeader);
+
         ServerHttpRequest request = exchange.getRequest();
         logger.info("Pre Filter: Request URI: " + request.getURI());
         return chain.filter(exchange);
