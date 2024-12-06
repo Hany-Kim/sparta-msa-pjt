@@ -10,10 +10,18 @@ import com.spring_cloud.eureka.client.order.repository.OrderProductRepository;
 import com.spring_cloud.eureka.client.order.repository.OrderRepository;
 import com.spring_cloud.eureka.client.order.repository.ProductClient;
 import com.spring_cloud.eureka.client.order.repository.UserClinet;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OrderService {
+
+    @Value("${service.jwt.secret-key}")
+    private String secretKey;
+
 
     private final UserClinet userClinet;
 
@@ -31,15 +43,17 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     @Transactional
-    public OrderListResponseDto addOrder(String username) {
+    public OrderListResponseDto addOrder(HttpServletRequest request) {
+        String token = getToken(request);
+        String authorizationHeader = "Bearer " + token;
 
         // 사용자 영속성 체크
-//        User user = userRepository.findById(username)
-//                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        //User user = userClinet.getUser(username);
-        UserDto userDto = userClinet.getUser(username);
+        String username = getUsernameAtToken(token);
+        System.out.println("username = " + username);
 
+        UserDto userDto = userClinet.getUser(request, username);
         // 주문 생성
+        System.out.println("userDto.getUsername() = " + userDto.getUsername());
 
         List<OrderProduct> orderProductList = new ArrayList<>();
         Order newOrder = Order.from(userDto.getUsername(), orderProductList);
@@ -60,13 +74,13 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderListResponseDto addProductToOrder(String username, Long orderId, Long productId) {
+    public OrderListResponseDto addProductToOrder(HttpServletRequest request, Long orderId, Long productId) {
+        String token = getToken(request);
+        String authorizationHeader = "Bearer " + token;
 
         // 사용자 영속성 체크
-//        User user = userRepository.findById(username)
-//                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-//        User user = userClinet.getUser(username);
-        UserDto userDto = userClinet.getUser(username);
+        String username = getUsernameAtToken(token);
+        UserDto userDto = userClinet.getUser(request, username);
         // 상품 영속성 체크
 //        Product product = productRepository.findById(productId)
 //                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
@@ -127,5 +141,21 @@ public class OrderService {
         responseDto.setProducts(productList);
 
         return responseDto;
+    }
+
+    private String getUsernameAtToken(String token) {
+        SecretKey key = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secretKey));
+        Jws<Claims> claimsJws = Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token);
+
+        String username = (String) claimsJws.getBody().get("username");
+        return username;
+    }
+
+    private String getToken(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        return token;
     }
 }
